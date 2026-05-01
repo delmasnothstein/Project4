@@ -1,0 +1,19 @@
+{
+  "name": "Processing Codespace",
+
+  "image": "mcr.microsoft.com/devcontainers/java:1-17-bullseye",
+
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {}
+  },
+
+  "postCreateCommand": "bash .devcontainer/install-processing.sh",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vscjava.vscode-java-pack"
+      ]
+    }
+  }
+}
