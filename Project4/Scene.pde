@@ -1,5 +1,5 @@
 /**
- *      Author: Prof. Morales
+ *      Authors: Prof. Morales, Delmas Nothstein, Nathan Lafayette, Claire Kolovich
  *      Course: CPSC 220
  *  Instructor: Prof. Morales
  *     Created: 2026-04-15
@@ -16,7 +16,12 @@ import java.util.LinkedList;
 class Scene {
   private int roomWidth;
   private int roomHeight;
-  private WorldObject[][] room;
+  public Scene() {} //UPDATE LATER
+  public Scene(JSONObject data) {} //UPDATE LATER
+  private JSONObject serialize() {
+  return new JSONObject(); //UPDATE LATER
+}
+private WorldObject[][] room;
   private Direction entry;
   private Player player;
   private LinkedList<Actor> enemies;
