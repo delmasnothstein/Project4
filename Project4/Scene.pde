@@ -16,7 +16,19 @@ import java.util.LinkedList;
 class Scene {
   private int roomWidth;
   private int roomHeight;
-  public Scene() {} //UPDATE LATER
+  public Scene() {
+
+  this.roomWidth = 10;
+  this.roomHeight = 8;
+
+  this.room = new WorldObject[roomWidth][roomHeight];
+
+  this.enemies = new LinkedList<Actor>();
+  this.positions = new HashMap<WorldObject, Position>();
+  this.doors = new HashMap<Direction, Position>();
+
+  this.reset(Direction.NORTH);
+}
   public Scene(JSONObject data) {} //UPDATE LATER
   private JSONObject serialize() {
   return new JSONObject(); //UPDATE LATER
@@ -37,13 +49,10 @@ private WorldObject[][] room;
    */
 
   private void reset(Direction entry) {
+    this.entry = entry;
     if (entry == null) {
       return;
     }
-
-    //----------------------------\\
-    // TODO: COMPLETE THIS METHOD \\
-    //----------------------------\\
   }
 
   /**
@@ -302,11 +311,26 @@ private WorldObject[][] room;
    */
 
   public void draw() {
+    println("roomWidth:", roomWidth, "roomHeight:", roomHeight);
     // Determine the floor size
     float size = min((float)width / (this.roomWidth + 2), (float)height / (this.roomHeight + 2));
 
-    //----------------------------\\
-    // TODO: COMPLETE THIS METHOD \\
-    //----------------------------\\
+    
+  background(40);
+
+  float startX = (width - roomWidth * size) / 2;
+  float startY = (height - roomHeight * size) / 2;
+
+  stroke(255);
+  fill(120);
+  
+  for (int x = 0; x < roomWidth; x++) {
+    for (int y = 0; y < roomHeight; y++) {
+      rect(startX + x * size,
+           startY + y * size,
+           size,
+           size);
+      }
+    }
   }
 }
