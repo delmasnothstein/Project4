@@ -29,7 +29,17 @@ class Scene {
 
   this.reset(Direction.NORTH);
 }
-  public Scene(JSONObject data) {} //UPDATE LATER
+  public Scene(JSONObject data) { //ALL TEMPORARY, UPDATE LATER
+  this.roomWidth = 10;
+  this.roomHeight = 8;
+
+  this.room = new WorldObject[roomWidth][roomHeight];
+  this.enemies = new LinkedList<Actor>();
+  this.positions = new HashMap<WorldObject, Position>();
+  this.doors = new HashMap<Direction, Position>();
+
+  this.reset(Direction.NORTH);
+}
   private JSONObject serialize() {
   return new JSONObject(); //UPDATE LATER
 }
