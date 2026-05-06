@@ -1,5 +1,5 @@
 /**
- *      Author: Prof. Morales
+ *      Authors: Prof. Morales, Delmas Nothstein, Nathan Lafayette, Claire Kolovich
  *      Course: CPSC 220
  *  Instructor: Prof. Morales
  *     Created: 2026-04-15
