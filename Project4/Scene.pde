@@ -111,6 +111,9 @@ private WorldObject[][] room;
       this.reset(direction);
     }
 
+    // Update player valid actions FIRST
+    this.updateActions(this.player);
+
     // Get the player's action
     Action action = this.player.getAction();
 
