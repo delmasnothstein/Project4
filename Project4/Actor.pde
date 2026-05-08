@@ -15,6 +15,9 @@ abstract class Actor extends WorldObject {
   private int damage;
   protected Direction facing;
   protected HashMap<Action, Boolean> validActions;
+  public int getMaxHealth() {
+  return this.maxHealth;
+}
 
   /**
    * Constructor: public Actor()
