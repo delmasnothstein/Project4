@@ -17,24 +17,38 @@ class Enemy extends Actor {
 }
   
     @Override
- public Action getAction() {
+public Action getAction() {
 
-  Action action = null;
+  Action forward;
 
   switch (this.facing) {
-    case NORTH: action = Action.MOVE_NORTH; break;
-    case SOUTH: action = Action.MOVE_SOUTH; break;
-    case EAST:  action = Action.MOVE_EAST;  break;
-    case WEST:  action = Action.MOVE_WEST;  break;
+    case NORTH: forward = Action.MOVE_NORTH; break;
+    case SOUTH: forward = Action.MOVE_SOUTH; break;
+    case EAST:  forward = Action.MOVE_EAST;  break;
+    case WEST:  forward = Action.MOVE_WEST;  break;
+    default:     forward = Action.MOVE_NORTH; break;
   }
 
-  if (random(1) < 0.2) {
+  // If blocked, change direction immediately
+  if (!this.getActionValidity(forward)) {
     Direction[] dirs = Direction.values();
     this.facing = dirs[int(random(dirs.length))];
-    return null;
+
+    switch (this.facing) {
+      case NORTH: return Action.MOVE_NORTH;
+      case SOUTH: return Action.MOVE_SOUTH;
+      case EAST:  return Action.MOVE_EAST;
+      case WEST:  return Action.MOVE_WEST;
+    }
   }
 
-  return action;
+  // occasional random turn
+  if (random(1) < 0.1) {
+    Direction[] dirs = Direction.values();
+    this.facing = dirs[int(random(dirs.length))];
+  }
+
+  return forward;
 }
   
   @Override
