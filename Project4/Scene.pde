@@ -69,6 +69,18 @@ private WorldObject[][] room;
       this.player = new Player(entry);
     }
     
+    this.enemies.clear();
+    
+    //spawn one enemy
+    Enemy enemy = new Enemy(Direction.SOUTH);
+    
+    int ex = 2;
+    int ey = 2;
+    
+    this.room[ex][ey] = enemy;
+    this.positions.put(enemy, new Position(ex, ey, this));
+    this.enemies.add(enemy);
+    
     this.room = new WorldObject[roomWidth][roomHeight];
     this.positions.clear();
     
@@ -360,14 +372,20 @@ private WorldObject[][] room;
       }
     }
     
-    Position p = positions.get(player);
+  for (WorldObject obj : positions.keySet()) {
     
-    if (p != null) {
+    Position pos = positions.get(obj);
+    
+    float drawX = startX + pos.getX() * size;
+    float drawY = startY + pos.getY() * size;
+    
+    if (obj instanceof Player) {
       fill(0, 200, 0);
-      rect(startX + p.getX() * size,
-           startY + p.getY() * size,
-           size,
-           size);
+      rect(drawX, drawY, size, size);
+    }
+    else if (obj instanceof Enemy) {
+      ((Enemy)obj).draw(drawX, drawY, size);
+      }
     }
   }
 }
