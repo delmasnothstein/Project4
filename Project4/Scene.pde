@@ -347,7 +347,7 @@ private WorldObject[][] room;
    */
 
   public void draw() {
-    println("roomWidth:", roomWidth, "roomHeight:", roomHeight);
+    //println("roomWidth:", roomWidth, "roomHeight:", roomHeight); //debug purposes
     // Determine the floor size
     float size = min((float)width / (this.roomWidth + 2), (float)height / (this.roomHeight + 2));
 
@@ -377,12 +377,36 @@ private WorldObject[][] room;
     float drawY = startY + pos.getY() * size;
     
     if (obj instanceof Player) {
+      Player p = (Player)obj;
+
+     drawHealthBar(drawX, drawY, size, p);
+
       fill(0, 200, 0);
       rect(drawX, drawY, size, size);
-    }
+      }
     else if (obj instanceof Enemy) {
-      ((Enemy)obj).render(drawX, drawY, size);
+      Enemy e = (Enemy)obj;
+
+      drawHealthBar(drawX, drawY, size, e);
+
+      e.render(drawX, drawY, size);
       }
     }
   }
+}
+
+private void drawHealthBar(float x, float y, float size, Actor actor) {
+
+  float ratio = actor.getHealth(); // already 0–1
+
+  float barWidth = size;
+  float barHeight = size * 0.12;
+
+  // empty health
+  fill(120, 0, 0);
+  rect(x, y - barHeight - 2, barWidth, barHeight);
+
+  // filled health
+  fill(0, 220, 0);
+  rect(x, y - barHeight - 2, barWidth * ratio, barHeight);
 }
