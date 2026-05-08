@@ -59,37 +59,38 @@ private WorldObject[][] room;
    */
 
   private void reset(Direction entry) {
-    this.entry = entry;
-    
-    if (entry == null) {
-      return;
-    }
-    
-    if (this.player ==null) {
-      this.player = new Player(entry);
-    }
-    
-    this.enemies.clear();
-    
-    //spawn one enemy
-    Enemy enemy = new Enemy(Direction.SOUTH);
-    
-    int ex = 2;
-    int ey = 2;
-    
-    this.room[ex][ey] = enemy;
-    this.positions.put(enemy, new Position(ex, ey, this));
-    this.enemies.add(enemy);
-    
-    this.room = new WorldObject[roomWidth][roomHeight];
-    this.positions.clear();
-    
-    int px = roomWidth / 2;
-    int py = roomHeight / 2;
-    
-    this.room[px][py] = this.player;
-    this.positions.put(this.player, new Position(px, py, this));
+  this.entry = entry;
+
+  if (entry == null) {
+    return;
   }
+
+  // reset first
+  this.room = new WorldObject[roomWidth][roomHeight];
+  this.positions.clear();
+  this.enemies.clear();
+
+  // spawn player
+  if (this.player == null) {
+    this.player = new Player(entry);
+  }
+
+  int px = roomWidth / 2;
+  int py = roomHeight / 2;
+
+  this.room[px][py] = this.player;
+  this.positions.put(this.player, new Position(px, py, this));
+
+  // spawn enemy AFTER grid exists
+  Enemy enemy = new Enemy(Direction.SOUTH);
+
+  int ex = 2;
+  int ey = 2;
+
+  this.room[ex][ey] = enemy;
+  this.positions.put(enemy, new Position(ex, ey, this));
+  this.enemies.add(enemy);
+}
 
   /**
    *      Method: private updateActions()
@@ -384,7 +385,7 @@ private WorldObject[][] room;
       rect(drawX, drawY, size, size);
     }
     else if (obj instanceof Enemy) {
-      ((Enemy)obj).draw(drawX, drawY, size);
+      ((Enemy)obj).render(drawX, drawY, size);
       }
     }
   }
