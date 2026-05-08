@@ -60,9 +60,23 @@ private WorldObject[][] room;
 
   private void reset(Direction entry) {
     this.entry = entry;
+    
     if (entry == null) {
       return;
     }
+    
+    if (this.player ==null) {
+      this.player = new Player(entry);
+    }
+    
+    this.room = new WorldObject[roomWidth][roomHeight];
+    this.positions.clear();
+    
+    int px = roomWidth / 2;
+    int py = roomHeight / 2;
+    
+    this.room[px][py] = this.player;
+    this.positions.put(this.player, new Position(px, py, this));
   }
 
   /**
@@ -341,6 +355,16 @@ private WorldObject[][] room;
            size,
            size);
       }
+    }
+    
+    Position p = positions.get(player);
+    
+    if (p != null) {
+      fill(0, 200, 0);
+      rect(startX + p.getX() * size,
+           startY + p.getY() * size,
+           size,
+           size);
     }
   }
 }
