@@ -78,7 +78,7 @@ private WorldObject[][] room;
   this.positions.put(this.player, new Position(px, py, this));
 
   // spawn enemy AFTER grid exists
-  Enemy enemy = new Enemy(Direction.SOUTH);
+  Enemy enemy = new Enemy(this, Direction.SOUTH);
 
   int ex = 2;
   int ey = 2;
@@ -424,6 +424,18 @@ private WorldObject[][] room;
 
     }
   }
+  
+  public Position getPosition(WorldObject obj) {
+  return this.positions.get(obj);
+  }
+  
+  public WorldObject getObjectAt(int x, int y) {
+  return room[x][y];
+}
+public Player getPlayer() {
+  return this.player;
+}
+
 }
 
 private void drawHealthBar(float x, float y, float size, Actor actor) {
