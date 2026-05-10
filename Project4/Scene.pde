@@ -115,8 +115,16 @@ for (int i = 0; i < enemyCount; i++) {
 
   this.room[ox][oy] = obstacle;
   this.positions.put(obstacle, new Position(ox, oy, this));
+
+//DOOR CODE HERE//
+int dx = int(random(roomWidth));
+int dy = int(roomHeight);
+Door door = new Door();
+this.room[dx][dy] = door;
+this.positions.put(door, new Position(dx,dy, this));
+//DOOR CODE HERE//
   }
-  
+
   Bandage heal = new Bandage(this);
 
 int hx, hy;
