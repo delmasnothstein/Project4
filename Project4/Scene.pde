@@ -467,6 +467,20 @@ Bandage b = new Bandage(this);
     drawX + size*0.8, drawY + size*0.8
   );
 }
+
+//DOOR CODE HERE
+  else if (obj instanceof Door) {
+fill(200,100,100);
+triangle(
+    drawX + size/2, drawY + size*0.2,
+    drawX + size*0.2, drawY + size*0.8,
+    drawX + size*0.8, drawY + size*0.8
+  );
+}
+//DOOR CODE HERE
+
+
+
     else if (obj instanceof Bandage) {
   fill(100, 100, 255);
   stroke(255);
