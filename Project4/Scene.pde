@@ -116,6 +116,22 @@ for (int i = 0; i < enemyCount; i++) {
   this.room[ox][oy] = obstacle;
   this.positions.put(obstacle, new Position(ox, oy, this));
   }
+  
+  Bandage heal = new Bandage(this);
+
+int hx, hy;
+
+do {
+  hx = int(random(roomWidth));
+  hy = int(random(roomHeight));
+}
+while (room[hx][hy] != null);
+
+room[hx][hy] = heal;
+positions.put(heal, new Position(hx, hy, this));
+
+Bandage b = new Bandage(this);
+
 }
 
   /**
@@ -443,6 +459,17 @@ for (int i = 0; i < enemyCount; i++) {
     drawX + size*0.8, drawY + size*0.8
   );
 }
+    else if (obj instanceof Bandage) {
+  fill(100, 100, 255);
+  stroke(255);
+
+  float bandageSize = size * 0.5;
+
+  float bx = drawX + (size - bandageSize) / 2;
+  float by = drawY + (size - bandageSize) / 2;
+
+  rect(bx, by, bandageSize, bandageSize);
+}
 
     }
   }
@@ -456,6 +483,17 @@ for (int i = 0; i < enemyCount; i++) {
 }
 public Player getPlayer() {
   return this.player;
+}
+
+public void removeObject(WorldObject obj) {
+
+  Position pos = positions.get(obj);
+
+  if (pos != null) {
+    room[pos.getX()][pos.getY()] = null;
+  }
+
+  positions.remove(obj);
 }
 
 }
