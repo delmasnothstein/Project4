@@ -14,7 +14,7 @@ class Enemy extends Actor {
   private Scene scene;
 
   Enemy(Scene scene, Direction direction) {
-  super(100, 50, direction);   // health, damage, facing
+  super(100, 25, direction);   // health, damage, facing
   this.scene = scene;
 }
 
