@@ -159,13 +159,23 @@ private WorldObject[][] room;
     }
 
     for (int i = 0; i < this.enemies.size(); ++i) {
-      Actor enemy = this.enemies.get(i);
 
-      // Remove dead enemies
-      if (enemy.getHealth() == 0) {
-        this.enemies.remove(i--);
-        continue;
-      }
+  Actor enemy = this.enemies.get(i);
+
+  // remove dead enemies
+  if (enemy.getHealth() <= 0) {
+
+    Position pos = this.positions.get(enemy);
+
+    if (pos != null) {
+      this.room[pos.getX()][pos.getY()] = null;
+    }
+
+    this.positions.remove(enemy);
+    this.enemies.remove(i--);
+
+    continue;
+  }
 
       // Get the enemy's action
       this.updateActions(enemy);
