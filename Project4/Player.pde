@@ -24,7 +24,7 @@ public void draw() {
    */
 
   public Player(Direction direction) {
-    super(100, 10, direction);
+    super(100, 50, direction);
     this.nextKey = '\0';
     this.debounce = new HashMap<Character, Boolean>();
   }
