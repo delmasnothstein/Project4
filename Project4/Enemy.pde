@@ -14,7 +14,7 @@ class Enemy extends Actor {
   private Scene scene;
 
   Enemy(Scene scene, Direction direction) {
-  super(50, 5, direction);   // health, damage, facing
+  super(100, 50, direction);   // health, damage, facing
   this.scene = scene;
 }
 
@@ -98,11 +98,6 @@ return chosen;
     }
   }
   
-  
-  private int manhattanDistance(Position a, Position b) {
-  return abs(a.getX() - b.getX()) + abs(a.getY() - b.getY());
-}
-
 private Action wander() {
 
   Action[] options = {
@@ -181,6 +176,11 @@ private Action chase(Position pos, Position playerPos) {
       break;
   }
 }
+
+  private int manhattanDistance(Position a, Position b) {
+  return abs(a.getX() - b.getX()) + abs(a.getY() - b.getY());
+}
+
 
 
 private Action attackPlayer(Position pos, Position playerPos) {
