@@ -18,8 +18,8 @@ class Scene {
   private int roomHeight;
   public Scene() {
 
-  this.roomWidth = 10;
-  this.roomHeight = 8;
+  this.roomWidth = 20;
+  this.roomHeight = 15;
 
   this.room = new WorldObject[roomWidth][roomHeight];
 
@@ -28,8 +28,8 @@ class Scene {
   this.doors = new HashMap<Direction, Position>();
 }
   public Scene(JSONObject data) { //ALL TEMPORARY, UPDATE LATER
-  this.roomWidth = 10;
-  this.roomHeight = 8;
+  this.roomWidth = 20;
+  this.roomHeight = 15;
 
   this.room = new WorldObject[roomWidth][roomHeight];
   this.enemies = new LinkedList<Actor>();
@@ -78,16 +78,28 @@ private WorldObject[][] room;
   this.positions.put(this.player, new Position(px, py, this));
 
   // spawn enemy AFTER grid exists
+  int enemyCount = 3;
+
+for (int i = 0; i < enemyCount; i++) {
+
   Enemy enemy = new Enemy(this, Direction.SOUTH);
 
-  int ex = 2;
-  int ey = 2;
+  int ex, ey;
+
+  // find empty tile
+  do {
+    ex = int(random(roomWidth));
+    ey = int(random(roomHeight));
+  }
+  while (this.room[ex][ey] != null ||
+       (abs(ex - px) <= 1 && abs(ey - py) <= 1));
 
   this.room[ex][ey] = enemy;
   this.positions.put(enemy, new Position(ex, ey, this));
   this.enemies.add(enemy);
+}
   
-  int obstacleCount = 4; // amount of obstacles in the room
+  int obstacleCount = 20; // amount of obstacles in the room
 
   for (int i = 0; i < obstacleCount; i++) {
 
