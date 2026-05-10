@@ -20,23 +20,39 @@ class Enemy extends Actor {
 
   @Override
 public Action getAction() {
-  int DETECTION_RANGE = 2; // tweak this later
+
+  int DETECTION_RANGE = 4;
+
   Position pos = scene.getPosition(this);
   Position playerPos = scene.getPosition(scene.getPlayer());
 
   if (pos == null || playerPos == null) {
-    return Action.MOVE_NORTH;
+    Action a = Action.MOVE_NORTH;
+    updateFacing(a);
+    return a;
   }
 
-  // detection check
   int dist = manhattanDistance(pos, playerPos);
 
-  if (dist > DETECTION_RANGE) {
-    return wander();
-  }
+  Action chosen;
 
-  // OTHERWISE → chase player
-  return chase(pos, playerPos);
+if (dist == 1) {
+  chosen = attackPlayer(pos, playerPos);
+}
+else if (dist <= DETECTION_RANGE) {
+  chosen = chase(pos, playerPos);
+}
+else {
+  chosen = wander();
+}
+
+// SAFETY CHECK
+if (chosen == null) {
+  chosen = Action.MOVE_SOUTH; // or any default safe move
+}
+
+updateFacing(chosen);
+return chosen;
 }
 
   @Override
@@ -82,22 +98,6 @@ public Action getAction() {
     }
   }
   
-  private boolean canMoveTo(int dx, int dy) {
-  Position pos = scene.getPosition(this);
-  if (pos == null) return false;
-
-  int x = pos.getX() + dx;
-  int y = pos.getY() + dy;
-
-  // bounds
-  if (x < 0 || y < 0 || x >= scene.getRoomWidth() || y >= scene.getRoomHeight()) {
-    return false;
-  }
-
-  // blocked tile
-  WorldObject obj = scene.getObjectAt(x, y);
-  return obj == null || obj instanceof Player;
-  }
   
   private int manhattanDistance(Position a, Position b) {
   return abs(a.getX() - b.getX()) + abs(a.getY() - b.getY());
@@ -112,15 +112,16 @@ private Action wander() {
     Action.MOVE_WEST
   };
 
-  // try random valid move
-  for (int i = 0; i < options.length; i++) {
+  // try several random moves
+  for (int i = 0; i < 10; i++) {
     Action a = options[int(random(options.length))];
     if (this.getActionValidity(a)) {
       return a;
     }
   }
 
-  return null;
+  // default movement
+  return Action.MOVE_SOUTH;
 }
 
 private Action chase(Position pos, Position playerPos) {
@@ -152,6 +153,47 @@ private Action chase(Position pos, Position playerPos) {
   }
 
   return wander();
+}
+
+  private void updateFacing(Action action) {
+
+  if (action == null) return;
+
+  switch (action) {
+    case MOVE_NORTH:
+    case ATTACK_NORTH:
+      facing = Direction.NORTH;
+      break;
+
+    case MOVE_SOUTH:
+    case ATTACK_SOUTH:
+      facing = Direction.SOUTH;
+      break;
+
+    case MOVE_EAST:
+    case ATTACK_EAST:
+      facing = Direction.EAST;
+      break;
+
+    case MOVE_WEST:
+    case ATTACK_WEST:
+      facing = Direction.WEST;
+      break;
+  }
+}
+
+
+private Action attackPlayer(Position pos, Position playerPos) {
+
+  int dx = playerPos.getX() - pos.getX();
+  int dy = playerPos.getY() - pos.getY();
+
+  if (dx == 1)  return Action.ATTACK_EAST;
+  if (dx == -1) return Action.ATTACK_WEST;
+  if (dy == 1)  return Action.ATTACK_SOUTH;
+  if (dy == -1) return Action.ATTACK_NORTH;
+
+  return null;
 }
 
 }
