@@ -11,52 +11,40 @@
 
 class Enemy extends Actor {
 
-  public Enemy(Direction facing) {
-  super(50, 5, facing); // example: weaker than player
-  this.facing = facing;
+  private Scene scene;
+
+  Enemy(Scene scene, Direction direction) {
+  super(50, 5, direction);   // health, damage, facing
+  this.scene = scene;
 }
-  
-    @Override
-public Action getAction() {
 
-  Action forward;
-
-  switch (this.facing) {
-    case NORTH: forward = Action.MOVE_NORTH; break;
-    case SOUTH: forward = Action.MOVE_SOUTH; break;
-    case EAST:  forward = Action.MOVE_EAST;  break;
-    case WEST:  forward = Action.MOVE_WEST;  break;
-    default:     forward = Action.MOVE_NORTH; break;
-  }
-
-  // If blocked, change direction immediately
-  if (!this.getActionValidity(forward)) {
-    Direction[] dirs = Direction.values();
-    this.facing = dirs[int(random(dirs.length))];
-
-    switch (this.facing) {
-      case NORTH: return Action.MOVE_NORTH;
-      case SOUTH: return Action.MOVE_SOUTH;
-      case EAST:  return Action.MOVE_EAST;
-      case WEST:  return Action.MOVE_WEST;
-    }
-  }
-
-  // occasional random turn
-  if (random(1) < 0.1) {
-    Direction[] dirs = Direction.values();
-    this.facing = dirs[int(random(dirs.length))];
-  }
-
-  return forward;
-}
-  
   @Override
-public void draw() {
-  // required by WorldObject, not used
+public Action getAction() {
+  int DETECTION_RANGE = 2; // tweak this later
+  Position pos = scene.getPosition(this);
+  Position playerPos = scene.getPosition(scene.getPlayer());
+
+  if (pos == null || playerPos == null) {
+    return Action.MOVE_NORTH;
+  }
+
+  // detection check
+  int dist = manhattanDistance(pos, playerPos);
+
+  if (dist > DETECTION_RANGE) {
+    return wander();
+  }
+
+  // OTHERWISE → chase player
+  return chase(pos, playerPos);
 }
-  
-    public void render(float x, float y, float size) {
+
+  @Override
+  public void draw() {
+    // required by WorldObject, not used
+  }
+
+  public void render(float x, float y, float size) {
 
     fill(200, 0, 0);
     rect(x, y, size, size);
@@ -93,4 +81,77 @@ public void draw() {
         break;
     }
   }
+  
+  private boolean canMoveTo(int dx, int dy) {
+  Position pos = scene.getPosition(this);
+  if (pos == null) return false;
+
+  int x = pos.getX() + dx;
+  int y = pos.getY() + dy;
+
+  // bounds
+  if (x < 0 || y < 0 || x >= scene.getRoomWidth() || y >= scene.getRoomHeight()) {
+    return false;
+  }
+
+  // blocked tile
+  WorldObject obj = scene.getObjectAt(x, y);
+  return obj == null || obj instanceof Player;
+  }
+  
+  private int manhattanDistance(Position a, Position b) {
+  return abs(a.getX() - b.getX()) + abs(a.getY() - b.getY());
+}
+
+private Action wander() {
+
+  Action[] options = {
+    Action.MOVE_NORTH,
+    Action.MOVE_SOUTH,
+    Action.MOVE_EAST,
+    Action.MOVE_WEST
+  };
+
+  // try random valid move
+  for (int i = 0; i < options.length; i++) {
+    Action a = options[int(random(options.length))];
+    if (this.getActionValidity(a)) {
+      return a;
+    }
+  }
+
+  return null;
+}
+
+private Action chase(Position pos, Position playerPos) {
+
+  int dx = Integer.compare(playerPos.getX(), pos.getX());
+  int dy = Integer.compare(playerPos.getY(), pos.getY());
+
+  Action preferred;
+
+  if (dx > 0) preferred = Action.MOVE_EAST;
+  else if (dx < 0) preferred = Action.MOVE_WEST;
+  else if (dy > 0) preferred = Action.MOVE_SOUTH;
+  else preferred = Action.MOVE_NORTH;
+
+  if (this.getActionValidity(preferred)) {
+    return preferred;
+  }
+
+  Action alternate;
+
+  if (preferred == Action.MOVE_EAST || preferred == Action.MOVE_WEST) {
+    alternate = (dy > 0) ? Action.MOVE_SOUTH : Action.MOVE_NORTH;
+  } else {
+    alternate = (dx > 0) ? Action.MOVE_EAST : Action.MOVE_WEST;
+  }
+
+  if (this.getActionValidity(alternate)) {
+    return alternate;
+  }
+
+  return wander();
+}
+
 }
