@@ -86,6 +86,24 @@ private WorldObject[][] room;
   this.room[ex][ey] = enemy;
   this.positions.put(enemy, new Position(ex, ey, this));
   this.enemies.add(enemy);
+  
+  int obstacleCount = 4; // amount of obstacles in the room
+
+  for (int i = 0; i < obstacleCount; i++) {
+
+  int ox, oy;
+
+    do {
+    ox = int(random(roomWidth));
+    oy = int(random(roomHeight));
+    }
+  while (this.room[ox][oy] != null);
+
+  Obstacle obstacle = new Obstacle();
+
+  this.room[ox][oy] = obstacle;
+  this.positions.put(obstacle, new Position(ox, oy, this));
+  }
 }
 
   /**
@@ -391,6 +409,19 @@ private WorldObject[][] room;
 
       e.render(drawX, drawY, size);
       }
+      
+      else if (obj instanceof Obstacle) {
+
+  fill(200);
+  stroke(255);
+
+  triangle(
+    drawX + size/2, drawY + size*0.2,
+    drawX + size*0.2, drawY + size*0.8,
+    drawX + size*0.8, drawY + size*0.8
+  );
+}
+
     }
   }
 }
