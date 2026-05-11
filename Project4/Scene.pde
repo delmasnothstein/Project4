@@ -203,6 +203,8 @@ positions.put(heal, new Position(hx, hy, this));
 
   // remove dead enemies
   if (enemy.getHealth() <= 0) {
+    
+    enemyDeath.play();
 
     Position pos = this.positions.get(enemy);
 
@@ -303,6 +305,7 @@ positions.put(heal, new Position(hx, hy, this));
   if (target instanceof Door) {
     transitioning = true;
     roomsCleared++;
+    stairClimb.play();
     this.reset(this.entry);
     return true;
   }
@@ -589,3 +592,4 @@ private void resetRun() {
 }
 
 }
+
