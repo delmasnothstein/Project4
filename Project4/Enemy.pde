@@ -1,5 +1,5 @@
 /**
- *     Authors: Prof. Morales, Delmas Nothstein, Nathan Lafayette, Claire Kolovich
+ *     Authors: Prof. Morales, Delmas Nothstein, Nathan Lafayette
  *      Course: CPSC 220
  *  Instructor: Prof. Morales
  *     Created: 2026-04-15
@@ -13,11 +13,27 @@ class Enemy extends Actor {
 
   private Scene scene;
 
+/**
+ *      Method: Enemy(Scene scene, Direction direction)
+ *  Parameters: Scene scene - The game scene the enemy exists within
+ *              Direction direction - The initial facing direction of the enemy
+ *      Return: Constructor (no return type)
+ * Description: Creates an enemy actor with default health and damage values,
+ *              and assigns it a reference to the current game scene.
+ */
   Enemy(Scene scene, Direction direction) {
   super(100, 25, direction);   // health, damage, facing
   this.scene = scene;
 }
 
+/**
+ *      Method: getAction()
+ *  Parameters: void
+ *      Return: Action - The next action the enemy will perform
+ * Description: Determines the enemy's next move based on the player's
+ *              distance. The enemy will attack if adjacent, chase if
+ *              within detection range, or wander randomly otherwise.
+ */
   @Override
 public Action getAction() {
 
@@ -55,11 +71,28 @@ updateFacing(chosen);
 return chosen;
 }
 
+/**
+ *      Method: draw()
+ *  Parameters: void
+ *      Return: void
+ * Description: Required override from WorldObject.
+ *              Enemy rendering is handled externally in Scene,
+ *              so this method is intentionally empty.
+ */
   @Override
   public void draw() {
     // required by WorldObject, not used
   }
 
+/**
+ *      Method: render(float x, float y, float size)
+ *  Parameters: float x - Screen x-position to draw the enemy
+ *              float y - Screen y-position to draw the enemy
+ *              float size - Size of the grid cell for scaling
+ *      Return: void
+ * Description: Visually renders the enemy as a red square with a
+ *              directional indicator showing its current facing direction.
+ */
   public void render(float x, float y, float size) {
 
     fill(200, 0, 0);
@@ -98,6 +131,14 @@ return chosen;
     }
   }
   
+  /**
+ *      Method: wander()
+ *  Parameters: void
+ *      Return: Action - A random valid movement action
+ * Description: Attempts to select a random valid movement direction.
+ *              If no valid moves are found after several attempts,
+ *              defaults to moving south.
+ */
 private Action wander() {
 
   Action[] options = {
@@ -119,6 +160,15 @@ private Action wander() {
   return Action.MOVE_SOUTH;
 }
 
+/**
+ *      Method: chase(Position pos, Position playerPos)
+ *  Parameters: Position pos - Current position of the enemy
+ *              Position playerPos - Current position of the player
+ *      Return: Action - A movement action toward the player
+ * Description: Determines the best movement direction to approach
+ *              the player. Attempts primary axis movement first,
+ *              then falls back to an alternate direction or wandering.
+ */
 private Action chase(Position pos, Position playerPos) {
 
   int dx = Integer.compare(playerPos.getX(), pos.getX());
@@ -150,6 +200,13 @@ private Action chase(Position pos, Position playerPos) {
   return wander();
 }
 
+/**
+ *      Method: updateFacing(Action action)
+ *  Parameters: Action action - The action used to determine facing direction
+ *      Return: void
+ * Description: Updates the enemy's facing direction based on the
+ *              direction of movement or attack action.
+ */
   private void updateFacing(Action action) {
 
   if (action == null) return;
@@ -177,12 +234,27 @@ private Action chase(Position pos, Position playerPos) {
   }
 }
 
-  private int manhattanDistance(Position a, Position b) {
+/**
+ *      Method: manhattanDistance(Position a, Position b)
+ *  Parameters: Position a - First position
+ *              Position b - Second position
+ *      Return: int - The Manhattan distance between two positions
+ * Description: Calculates grid-based distance between two points
+ *              using only horizontal and vertical movement.
+ */
+  private int manhattanDistance(Position a, Position b) { //I wrote this a few days ago and I cannot remember where I learned it from, I'm sorry -Del
   return abs(a.getX() - b.getX()) + abs(a.getY() - b.getY());
 }
 
 
-
+/**
+ *      Method: attackPlayer(Position pos, Position playerPos)
+ *  Parameters: Position pos - Enemy position
+ *              Position playerPos - Player position
+ *      Return: Action - Attack action toward the player, or null if invalid
+ * Description: Determines the correct attack direction when the player
+ *              is directly adjacent to the enemy.
+ */
 private Action attackPlayer(Position pos, Position playerPos) {
 
   int dx = playerPos.getX() - pos.getX();
