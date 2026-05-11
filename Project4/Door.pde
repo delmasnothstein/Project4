@@ -1,12 +1,12 @@
 /**
- *      Author: Prof. Morales
+ *     Authors: Prof. Morales, Delmas Nothstein Nathan Lafayette
  *      Course: CPSC 220
  *  Instructor: Prof. Morales
  *     Created: 2026-04-15
  *         Due: 2026-05-10
  *  Assignment: Project 4
- *        File: WorldObject.pde
- * Description: When the player touches this, the room will be reset
+ *        File: Door.pde
+ * Description: When the player interacts with a door, a new room will be reached
  */
 class Door extends WorldObject {
 
@@ -19,6 +19,6 @@ class Door extends WorldObject {
   @Override
   public void draw() {
 
-    //empty for now
+    //handled in Scene.pde, still needed
   }
 }
