@@ -1,12 +1,5 @@
-import processing.sound.*;
-SoundFile music;
-SoundFile attackSound;
-SoundFile enemyDeath;
-SoundFile healSound;
-SoundFile stairClimb;
-
 /**
- *      Authors: Prof. Morales, Delmas Nothstein, Nathan Lafayette, Claire Kolovich
+ *      Authors: Prof. Morales, Delmas Nothstein, Nathan Lafayette
  *      Course: CPSC 220
  *  Instructor: Prof. Morales
  *     Created: 2026-04-15
@@ -14,7 +7,16 @@ SoundFile stairClimb;
  *  Assignment: Project 4
  *        File: Project4.pde
  * Description: A dungeon crawler game
+ * Outside audio sources:
+ * Audio from Kevin Macleod, Roblox, Happy Wheels, and Freesound.org
+ * Licensed under Creative Commons: By Attribution 4.0creativecommons.org
  */
+import processing.sound.*;
+SoundFile music;
+SoundFile attackSound;
+SoundFile enemyDeath;
+SoundFile healSound;
+SoundFile stairClimb;
 
 Scene scene;
 String fileName;
@@ -23,7 +25,7 @@ String fileName;
  *      Method: setup()
  *  Parameters: void
  *      Return: void
- * Description: Constructs a scene from JSON
+ * Description: Was meant to construct a scene from JSON
  *              save data or in a random state
  */
 
@@ -40,7 +42,7 @@ void setup() {
   fileName = sketchPath("data/save.json");
   File file = new File(fileName);
 
-  if (file.exists()) {
+  if (file.exists()) { //COULD NOT GET SAVES TO PROPERLY WORK ON TIME
     JSONObject data = loadJSONObject(fileName);
     scene = new Scene(data);
   } else {
@@ -79,8 +81,21 @@ void draw() {
  */
 
 void keyPressed() {
+  /*if (key == 'k' || key == 'K') {
+    saveJSONObject(scene.serialize(), "data/save.json");
+    scene.showMessage("Game Saved Successfully");
+  }
+  if (key == 'l' || key == 'L') {
+    JSONObject data = loadJSONObject("data/save.json");
+    
+    if (data != null) {
+      scene = new Scene(data);
+      scene.showMessage("Game Loaded Successfully");
+    }
+  }
+  */
   scene.keyPressed();
-}
+  }
 
 /**
  *      Method: keyReleased()
