@@ -139,8 +139,6 @@ while (room[hx][hy] != null);
 room[hx][hy] = heal;
 positions.put(heal, new Position(hx, hy, this));
 
-Bandage b = new Bandage(this);
-
 }
 
   /**
@@ -167,13 +165,16 @@ Bandage b = new Bandage(this);
    */
 
   public boolean tryTurn() {
-    // If the player is dead, reset the room
+    // If the player is dead, reset the room, but make sure it DOESN'T count as progression
     if (this.player == null || this.player.getHealth() == 0) {
-      Direction[] directions = Direction.values();
-      Direction direction = directions[int(random(directions.length))];
-      this.player = new Player(direction);
-      this.reset(direction);
-    }
+  transitioning = false; // reset state flag
+
+  Direction[] directions = Direction.values();
+  Direction direction = directions[int(random(directions.length))];
+
+  this.player = new Player(direction);
+  this.reset(direction);
+}
 
     // Update player valid actions FIRST
     this.updateActions(this.player);
@@ -277,20 +278,32 @@ Bandage b = new Bandage(this);
 
     // Check if the actor can attack
     if (action.isAttack) {
-      boolean isActionValid = this.room[x][y] instanceof Actor && (actor == this.player || this.room[x][y] == this.player);
 
-      if (isActionValid) {
-        Actor enemy = (Actor)this.room[x][y];
+  boolean isActionValid =
+      this.room[x][y] instanceof Actor &&
+      (actor == this.player || this.room[x][y] == this.player);
 
-        if (enemy.getHealth() > 0) {
-          enemy.updateHealth(-actor.getDamage());
-        } else {
-          this.room[x][y] = null;
-        }
-      }
+  if (isActionValid) {
+    Actor enemy = (Actor)this.room[x][y];
 
-      return isActionValid;
+    if (enemy.getHealth() > 0) {
+      enemy.updateHealth(-actor.getDamage());
+    } else {
+      this.room[x][y] = null;
     }
+  }
+
+  WorldObject target = this.room[x][y];
+
+  if (target instanceof Door) {
+    transitioning = true;
+    roomsCleared++;
+    this.reset(this.entry);
+    return true;
+  }
+
+  return true;   // attack completed
+}
 
     // Check if the actor can interact with an interactable object
     if (actor == this.player && this.room[x][y] instanceof Interactable) {
@@ -349,8 +362,9 @@ Bandage b = new Bandage(this);
 
     // Check if the actor can attack
     if (action.isAttack) {
-      return this.room[x][y] instanceof Actor && (actor == this.player || this.room[x][y] == this.player);
-    }
+  return this.room[x][y] instanceof Actor ||
+         this.room[x][y] instanceof Door;
+}
 
     // Check if the actor can move
     return this.room[x][y] == null || this.room[x][y] instanceof Interactable && actor == this.player;
@@ -519,20 +533,22 @@ public void removeObject(WorldObject obj) {
   positions.remove(obj);
 }
 
-}
+private boolean transitioning = false;
+private int roomsCleared = 0;
 
 private void drawHealthBar(float x, float y, float size, Actor actor) {
 
-  float ratio = actor.getHealth(); // already 0–1
+  float ratio = actor.getHealth();
 
   float barWidth = size;
   float barHeight = size * 0.12;
 
-  // empty health
   fill(120, 0, 0);
   rect(x, y - barHeight - 2, barWidth, barHeight);
 
-  // filled health
   fill(0, 220, 0);
   rect(x, y - barHeight - 2, barWidth * ratio, barHeight);
 }
+
+}
+
