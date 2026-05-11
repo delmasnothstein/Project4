@@ -92,6 +92,7 @@ for (int i = 0; i < enemyCount; i++) {
     ey = int(random(roomHeight));
   }
   while (this.room[ex][ey] != null ||
+       this.room[ex][ey] instanceof Door ||
        (abs(ex - px) <= 1 && abs(ey - py) <= 1));
 
   this.room[ex][ey] = enemy;
@@ -116,14 +117,14 @@ for (int i = 0; i < enemyCount; i++) {
   this.room[ox][oy] = obstacle;
   this.positions.put(obstacle, new Position(ox, oy, this));
 
-//DOOR CODE HERE//
-int dx = int(random(roomWidth));
-int dy = int(roomHeight);
+  }
+  //DOOR CODE HERE//
+int dx = constrain(int(random(roomWidth)), 0, roomWidth - 1);
+int dy = constrain(int(random(roomHeight)), 0, roomHeight - 1);
 Door door = new Door();
 this.room[dx][dy] = door;
 this.positions.put(door, new Position(dx,dy, this));
 //DOOR CODE HERE//
-  }
 
   Bandage heal = new Bandage(this);
 
@@ -470,12 +471,12 @@ Bandage b = new Bandage(this);
 
 //DOOR CODE HERE
   else if (obj instanceof Door) {
-fill(200,100,100);
-triangle(
-    drawX + size/2, drawY + size*0.2,
-    drawX + size*0.2, drawY + size*0.8,
-    drawX + size*0.8, drawY + size*0.8
-  );
+
+  fill(200, 120, 0);
+  stroke(255);
+
+  rect(drawX, drawY, size, size);
+
 }
 //DOOR CODE HERE
 
