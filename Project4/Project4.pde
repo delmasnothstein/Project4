@@ -1,6 +1,9 @@
 import processing.sound.*;
 SoundFile music;
 SoundFile attackSound;
+SoundFile enemyDeath;
+SoundFile healSound;
+SoundFile stairClimb;
 
 /**
  *      Authors: Prof. Morales, Delmas Nothstein, Nathan Lafayette, Claire Kolovich
@@ -27,8 +30,11 @@ String fileName;
 void setup() {
   music = new SoundFile(this, "Ancient Mystery Waltz Vivace.mp3");
   attackSound = new SoundFile(this, "roblox sword swing.mp3");
+  enemyDeath = new SoundFile(this, "happy wheels limb rip.mp3");
+  healSound = new SoundFile(this, "heal.mp3");
+  stairClimb = new SoundFile(this, "stairs.mp3");
   music.loop();
-  music.amp(0.5);
+  music.amp(0.3);
   fullScreen(P2D);
   pixelDensity(1);
   fileName = sketchPath("data/save.json");
