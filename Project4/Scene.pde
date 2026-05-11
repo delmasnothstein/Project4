@@ -1,5 +1,5 @@
 /**
- *      Authors: Prof. Morales, Delmas Nothstein, Nathan Lafayette, Claire Kolovich
+ *      Authors: Prof. Morales, Delmas Nothstein, Nathan Lafayette
  *      Course: CPSC 220
  *  Instructor: Prof. Morales
  *     Created: 2026-04-15
@@ -12,44 +12,66 @@
  */
 
 import java.util.LinkedList;
-private boolean transitioning = false;
-private int roomsCleared = 0;
-public int getFloorNumber() {
-  return roomsCleared + 1;
-}
 
 class Scene {
   private int roomWidth;
   private int roomHeight;
-  public Scene() {
-
-  this.roomWidth = 20;
-  this.roomHeight = 15;
-
-  this.room = new WorldObject[roomWidth][roomHeight];
-
-  this.enemies = new LinkedList<Actor>();
-  this.positions = new HashMap<WorldObject, Position>();
-  this.doors = new HashMap<Direction, Position>();
-}
-  public Scene(JSONObject data) { //ALL TEMPORARY, UPDATE LATER
-  this.roomWidth = 20;
-  this.roomHeight = 15;
-
-  this.room = new WorldObject[roomWidth][roomHeight];
-  this.enemies = new LinkedList<Actor>();
-  this.positions = new HashMap<WorldObject, Position>();
-  this.doors = new HashMap<Direction, Position>();
-}
-  private JSONObject serialize() {
-  return new JSONObject(); //UPDATE LATER
-}
-private WorldObject[][] room;
+  private WorldObject[][] room;
   private Direction entry;
   private Player player;
+  private int roomsCleared = 0;
+  private boolean transitioning = false; 
   private LinkedList<Actor> enemies;
   private HashMap<WorldObject, Position> positions;
   private HashMap<Direction, Position> doors;
+  public int getFloorNumber() {
+  return roomsCleared + 1;
+}
+
+/**
+ *      Method: Scene()
+ *  Parameters: void
+ *      Return: Constructor (no return type)
+ * Description: Initializes an empty scene with default room dimensions,
+ *              and prepares data structures used to track enemies,
+ *              object positions, and door locations.
+ */
+  public Scene() {
+
+  this.room = new WorldObject[roomWidth][roomHeight];
+
+  this.enemies = new LinkedList<Actor>();
+  this.positions = new HashMap<WorldObject, Position>();
+  this.doors = new HashMap<Direction, Position>();
+}
+
+/**
+ *      Method: Scene(JSONObject data)
+ *  Parameters: JSONObject data - Saved game state data
+ *      Return: Constructor (no return type)
+ * Description: Intended to reconstruct a Scene from saved JSON data.
+ *              Currently disabled due to incomplete save system implementation.
+ */
+  public Scene(JSONObject data) { //COULD NOT GET SAVES TO PROPERLY WORK ON TIME
+  this.roomWidth = 20;
+  this.roomHeight = 15;
+
+  this.room = new WorldObject[roomWidth][roomHeight];
+  this.enemies = new LinkedList<Actor>();
+  this.positions = new HashMap<WorldObject, Position>();
+  this.doors = new HashMap<Direction, Position>();
+}
+
+/**
+ *      Method: serialize()
+ *  Parameters: void
+ *      Return: JSONObject - Serialized representation of the Scene
+ * Description: Intended to convert the Scene into JSON format for saving.
+ *              Currently disabled due to incomplete save system implementation.
+ */
+  private JSONObject serialize() {
+  return new JSONObject(); //COULD NOT GET SAVES TO PROPERLY WORK ON TIME
+}
 
   /**
    *      Method: private reset()
@@ -83,10 +105,9 @@ private WorldObject[][] room;
   this.positions.put(this.player, new Position(px, py, this));
 
   // spawn enemy AFTER grid exists
-  int enemyCount = 3;
+  int enemyCount = 3 + (roomsCleared / 2);
 
 for (int i = 0; i < enemyCount; i++) {
-
   Enemy enemy = new Enemy(this, Direction.SOUTH);
 
   int ex, ey;
@@ -520,17 +541,43 @@ positions.put(heal, new Position(hx, hy, this));
     drawFloorCounter();
   }
   
+  /**
+ *      Method: getPosition(WorldObject obj)
+ *  Parameters: WorldObject obj - The object whose position is being retrieved
+ *      Return: Position - Grid position of the specified object
+ * Description: Retrieves the stored position of a world object in the scene.
+ */
   public Position getPosition(WorldObject obj) {
   return this.positions.get(obj);
   }
   
+  /**
+ *      Method: getObjectAt(int x, int y)
+ *  Parameters: int x - Horizontal grid coordinate
+ *              int y - Vertical grid coordinate
+ *      Return: WorldObject - Object located at the given position, or null
+ * Description: Returns the world object located at the specified grid cell.
+ */
   public WorldObject getObjectAt(int x, int y) {
   return room[x][y];
 }
+
+/**
+ *      Method: getPlayer()
+ *  Parameters: void
+ *      Return: Player - The current player instance in the scene
+ * Description: Returns the player object currently active in the scene.
+ */
 public Player getPlayer() {
   return this.player;
 }
 
+/**
+ *      Method: removeObject(WorldObject obj)
+ *  Parameters: WorldObject obj - The object to remove from the scene
+ *      Return: void
+ * Description: Removes a world object from both the grid and position tracking.
+ */
 public void removeObject(WorldObject obj) {
 
   Position pos = positions.get(obj);
@@ -542,6 +589,16 @@ public void removeObject(WorldObject obj) {
   positions.remove(obj);
 }
 
+/**
+ *      Method: drawHealthBar(float x, float y, float size, Actor actor)
+ *  Parameters: float x - Screen x-coordinate
+ *              float y - Screen y-coordinate
+ *              float size - Size of the grid cell for scaling
+ *              Actor actor - Actor whose health is being displayed
+ *      Return: void
+ * Description: Renders a visual health bar above an actor based on its
+ *              current health value.
+ */
 private void drawHealthBar(float x, float y, float size, Actor actor) {
 
   float ratio = actor.getHealth();
@@ -555,6 +612,14 @@ private void drawHealthBar(float x, float y, float size, Actor actor) {
   fill(0, 220, 0);
   rect(x, y - barHeight - 2, barWidth * ratio, barHeight);
 }
+
+/**
+ *      Method: drawFloorCounter()
+ *  Parameters: void
+ *      Return: void
+ * Description: Displays the current floor number in the top-left corner
+ *              of the screen as part of the user interface.
+ */
 private void drawFloorCounter() {
 
   int floor = getFloorNumber();
@@ -579,8 +644,15 @@ private void drawFloorCounter() {
        boxY + boxH / 2);
 }
 
+/**
+ *      Method: resetRun()
+ *  Parameters: void
+ *      Return: void
+ * Description: Resets the entire game state, including player position,
+ *              room layout, and floor progression, effectively starting
+ *              a new run.
+ */
 private void resetRun() {
-
   transitioning = false;
   roomsCleared = 0;
 
@@ -592,4 +664,3 @@ private void resetRun() {
 }
 
 }
-
