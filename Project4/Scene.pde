@@ -286,10 +286,16 @@ positions.put(heal, new Position(hx, hy, this));
     Actor enemy = (Actor)this.room[x][y];
 
     if (enemy.getHealth() > 0) {
-      enemy.updateHealth(-actor.getDamage());
-    } else {
-      this.room[x][y] = null;
-    }
+  enemy.updateHealth(-actor.getDamage());
+
+
+    if (actor == this.player) {
+      attackSound.play();
+  }
+
+} else {
+  this.room[x][y] = null;
+}
   }
 
   WorldObject target = this.room[x][y];
