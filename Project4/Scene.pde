@@ -12,6 +12,11 @@
  */
 
 import java.util.LinkedList;
+private boolean transitioning = false;
+private int roomsCleared = 0;
+public int getFloorNumber() {
+  return roomsCleared + 1;
+}
 
 class Scene {
   private int roomWidth;
@@ -164,20 +169,16 @@ positions.put(heal, new Position(hx, hy, this));
    *              logic for the player and all enemies
    */
 
-  public boolean tryTurn() {
-    // If the player is dead, reset the room, but make sure it DOESN'T count as progression
-    if (this.player == null || this.player.getHealth() == 0) {
-  transitioning = false; // reset state flag
+   public boolean tryTurn() {
 
-  Direction[] directions = Direction.values();
-  Direction direction = directions[int(random(directions.length))];
+  // Only reset if player is dead
+  if (this.player == null || this.player.getHealth() <= 0) {
+    resetRun();
+    return true;
+  }
 
-  this.player = new Player(direction);
-  this.reset(direction);
-}
-
-    // Update player valid actions FIRST
-    this.updateActions(this.player);
+  // Update player valid actions FIRST
+  this.updateActions(this.player);
 
     // Get the player's action
     Action action = this.player.getAction();
@@ -220,18 +221,16 @@ positions.put(heal, new Position(hx, hy, this));
       action = enemy.getAction();
 
       if (this.tryAction(enemy, action) && action.isAttack) {
-        // If the player died, reset the room and save the game
-        if (player.getHealth() == 0) {
-          Direction[] directions = Direction.values();
-          Direction direction = directions[int(random(directions.length))];
-          this.player = new Player(direction);
-          this.reset(direction);
-          return true;
-        }
 
-        // If the enemy attacked, save the game
-        save = true;
-      }
+  // If player died
+  if (this.player.getHealth() <= 0) {
+    resetRun();
+    return true;
+  }
+
+  // Enemy attacked but player survived
+  save = true;
+}
     }
 
     this.updateActions(this.player);
@@ -509,6 +508,7 @@ positions.put(heal, new Position(hx, hy, this));
 }
 
     }
+    drawFloorCounter();
   }
   
   public Position getPosition(WorldObject obj) {
@@ -533,9 +533,6 @@ public void removeObject(WorldObject obj) {
   positions.remove(obj);
 }
 
-private boolean transitioning = false;
-private int roomsCleared = 0;
-
 private void drawHealthBar(float x, float y, float size, Actor actor) {
 
   float ratio = actor.getHealth();
@@ -549,6 +546,40 @@ private void drawHealthBar(float x, float y, float size, Actor actor) {
   fill(0, 220, 0);
   rect(x, y - barHeight - 2, barWidth * ratio, barHeight);
 }
+private void drawFloorCounter() {
 
+  int floor = getFloorNumber();
+
+  float boxX = 15;
+  float boxY = 15;
+  float boxW = 160;
+  float boxH = 50;
+
+  // background box
+  fill(0, 0, 0, 180);
+  stroke(255);
+  rect(boxX, boxY, boxW, boxH, 8);
+
+  // text
+  fill(255);
+  textAlign(LEFT, CENTER);
+  textSize(18);
+
+  text("Floor: " + floor,
+       boxX + 12,
+       boxY + boxH / 2);
 }
 
+private void resetRun() {
+
+  transitioning = false;
+  roomsCleared = 0;
+
+  Direction[] directions = Direction.values();
+  Direction direction = directions[int(random(directions.length))];
+
+  this.player = new Player(direction);
+  this.reset(direction);
+}
+
+}
