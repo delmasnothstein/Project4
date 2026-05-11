@@ -1,5 +1,5 @@
 /**
- *      Authors: Prof. Morales, Delmas Nothstein, Nathan Lafayette, Claire Kolovich
+ *      Authors: Prof. Morales, Delmas Nothstein, Nathan Lafayette
  *      Course: CPSC 220
  *  Instructor: Prof. Morales
  *     Created: 2026-04-15
@@ -13,8 +13,16 @@ class Player extends Actor {
   private char nextKey;
   private HashMap<Character, Boolean> debounce;
 
+/**
+ *      Method: draw()
+ *  Parameters: void
+ *      Return: void
+ * Description: Required override from Actor/WorldObject.
+ *              Player rendering is handled by the Scene class,
+ *              so this method is intentionally left empty.
+ */
 public void draw() {
-//UPDATE LATER
+//needed but unused
 }
 
   /**
