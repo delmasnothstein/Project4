@@ -1,3 +1,7 @@
+import processing.sound.*;
+SoundFile music;
+SoundFile attackSound;
+
 /**
  *      Authors: Prof. Morales, Delmas Nothstein, Nathan Lafayette, Claire Kolovich
  *      Course: CPSC 220
@@ -21,6 +25,10 @@ String fileName;
  */
 
 void setup() {
+  music = new SoundFile(this, "Ancient Mystery Waltz Vivace.mp3");
+  attackSound = new SoundFile(this, "roblox sword swing.mp3");
+  music.loop();
+  music.amp(0.5);
   fullScreen(P2D);
   pixelDensity(1);
   fileName = sketchPath("data/save.json");
